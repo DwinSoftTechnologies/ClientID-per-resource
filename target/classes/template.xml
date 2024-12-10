@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:http-policy="http://www.mulesoft.org/schema/mule/http-policy"
+      xmlns:http-transform="http://www.mulesoft.org/schema/mule/http-policy-transform"
+      xsi:schemaLocation="
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/http-policy http://www.mulesoft.org/schema/mule/http-policy/current/mule-http-policy.xsd
+            http://www.mulesoft.org/schema/mule/http-policy-transform http://www.mulesoft.org/schema/mule/http-policy-transform/current/mule-http-policy-transform.xsd">
+
+
+    <http-policy:proxy name="{{{policyId}}}-custom-policy">
+        <http-policy:source>
+            <try>
+                  <choice  >
+                    {{#clientIDs}}
+                      <when expression="#[&#39;{{{.}}}&#39;=={{{clientIdExpression}}}]">
+                        <logger level="INFO" message="Route Found"/>
+                      </when>
+                    {{/clientIDs}}
+                    <otherwise >
+                      <raise-error type="CUSTOM:NOT_ALLOWED" 
+                        description="#['Access to method ' ++ attributes.method ++ ' on endpoint ' ++ attributes.rawRequestPath ++ ' is forbidden for Client ID ' ++ attributes.headers['client_id']]"/>
+                    </otherwise>      
+                  </choice>
+                
+
+                <error-handler>
+                    <on-error-propagate type="CUSTOM:NOT_ALLOWED">
+                        {{#if isWsdlEndpoint}}
+                        <try>
+                            <http-transform:set-response statusCode="403">
+                                <http-transform:body>#[
+                                    output application/xml
+                                    ---
+                                    Soap::clientErrorMessage(payload, 'Not allowed', error.description)
+                                    ]</http-transform:body>
+                            </http-transform:set-response>
+                            <error-handler>
+                                <on-error-continue logException="true" >
+                                    <http-transform:set-response statusCode="400">
+                                        <http-transform:body>#[
+                                            output application/xml
+                                            ---
+                                            Soap::soap11ClientErrorMessage('Bad request', 'Problem processing the request payload. Check for parsing errors.')
+                                            ]</http-transform:body>
+                                    </http-transform:set-response>
+                                </on-error-continue>
+                            </error-handler>
+                        </try>
+                        {{else}}
+                        <http-transform:set-response statusCode="403">
+                            <http-transform:body>#[
+                                output application/json
+                                ---
+                                {"error": error.description}
+                                ]</http-transform:body>
+                        </http-transform:set-response>
+                        {{/if}}
+                    </on-error-propagate>
+                </error-handler>
+            </try>
+            
+
+            <http-policy:execute-next/>  
+            
+        </http-policy:source>
+    </http-policy:proxy>
+</mule>

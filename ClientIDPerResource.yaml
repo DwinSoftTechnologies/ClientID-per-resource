@@ -1,0 +1,29 @@
+id: Client ID per resource
+name: Client ID per resource
+description: Allow specific Client Applications to access specific resources. This policy must be used with the Client ID enforcement policy, as the Client ID/Secret will NOT be validated in this policy.
+category: Compliance
+type: system
+violationCategory: authentication
+resourceLevelSupported: true
+encryptionSupported: false
+standalone: true
+requiredCharacteristics: []
+providedCharacteristics: []
+javaSupportedVersions: [8, 11, 17]
+configuration:   
+  - propertyName: clientIdExpression
+    name: Client ID Expression
+    description: Mule Expression to be used to extract the Client ID from API requests
+    type: string
+    defaultValue: "attributes.headers['client_id']"
+    optional: false
+    sensitive: false
+    allowMultiple: false
+  - propertyName: clientIDs
+    name: Client IDs allowed
+    description: Comma separated list of allowed Client IDs
+    type: string
+    optional: false
+    sensitive: false
+    allowMultiple: true
+    defaultValue: []
