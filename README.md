@@ -11,7 +11,7 @@ By upgrading, this project stays future-proof and aligns with the latest industr
 
 # How to Use the Configuration
 1.Client ID Extraction: 
-   To extract the Client ID from incoming API requests, use the following Mule Expression:( attributes.headers['client_id'] ).This expression retrieves the value of the client_id header from the API request attributes.
+   To extract the Client ID from incoming API requests, use the following Mule Expression:(attributes.headers['client_id']).This expression retrieves the value of the client_id header from the API request attributes.
    
 2.Allowed Client IDs: 
    Specify a comma-separated list of Client IDs that are permitted to access the API. For example: (client_id_1,client_id_2,client_id_3).These Client IDs should correspond to the values provided by consumers of your API.
