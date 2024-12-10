@@ -18,11 +18,11 @@ By upgrading, this project stays future-proof and aligns with the latest industr
 These Client IDs should correspond to the values provided by consumers of your API.
 
 Advanced Options
-1. Policy Version
-The configuration uses Policy version 1.0.1-SNAPSHOT (latest). Ensure you are working with the latest version to utilize the newest features and fixes.
+1. Policy Version:
+     The configuration uses Policy version 1.0.1-SNAPSHOT (latest). Ensure you are working with the latest version to utilize the newest features and fixes.
 
-2. Methods and Resource Conditions
-You can apply the policy to all API methods and resources or limit it to specific ones:
+2. Methods and Resource Conditions:
+    You can apply the policy to all API methods and resources or limit it to specific ones:
 Apply to All Methods & Resources:
      The policy will be enforced globally across all endpoints of the API.
 Apply to Specific Methods & Resources:
